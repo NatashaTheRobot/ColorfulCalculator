@@ -10,4 +10,6 @@
 
 @interface Math : NSObject
 
+- (CGFloat)calculateWithNumber:(NSInteger)x andNumber:(NSInteger)y andOperator:(NSString *)operator;
+
 @end

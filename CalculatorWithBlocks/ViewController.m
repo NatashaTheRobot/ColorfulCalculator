@@ -8,15 +8,11 @@
 
 #import "ViewController.h"
 #import "ColorsViewController.h"
-
-typedef CGFloat (^MathBloc)(NSInteger, NSInteger);
+#import "Math.h"
 
 @interface ViewController ()
 
-@property (copy, nonatomic) MathBloc add;
-@property (copy, nonatomic) MathBloc subtract;
-@property (copy, nonatomic) MathBloc multiply;
-@property (copy, nonatomic) MathBloc divide;
+@property (strong, nonatomic) Math *math;
 
 @property (strong, nonatomic) IBOutlet UILabel *number0Label;
 @property (strong, nonatomic) IBOutlet UILabel *number1Label;
@@ -42,15 +38,7 @@ typedef CGFloat (^MathBloc)(NSInteger, NSInteger);
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     [self clearAll];
-    [self setAllBlocs];
-}
-
-- (void)setAllBlocs
-{
-    self.add = ^(NSInteger x, NSInteger y){ return (CGFloat)x + (CGFloat)y; };
-    self.subtract = ^(NSInteger x, NSInteger y){ return (CGFloat)x - (CGFloat)y; };
-    self.multiply = ^(NSInteger x, NSInteger y){ return (CGFloat)x * (CGFloat)y; };
-    self.divide = ^(NSInteger x, NSInteger y){ return (CGFloat)x / (CGFloat)y; };
+    self.math = [[Math alloc] init];
 }
 
 - (void)didReceiveMemoryWarning
@@ -90,20 +78,9 @@ typedef CGFloat (^MathBloc)(NSInteger, NSInteger);
 
 - (IBAction)clickedEqualsButton:(id)sender
 {
-    if (self.numbersClicked.count == 2 && self.operatorClicked) {
-        MathBloc mathBloc;
+    if (self.numbersClicked.count == 2 && self.operatorClicked) {        
+        CGFloat answer = [self.math calculateWithNumber:[self.numbersClicked[0] integerValue] andNumber:[self.numbersClicked[1] integerValue] andOperator:self.operatorClicked];
         
-        if ([self.operatorClicked isEqualToString:@"+"]) {
-            mathBloc = self.add;
-        } else if ([self.operatorClicked isEqualToString:@"-"]) {
-            mathBloc = self.subtract;
-        } else if ([self.operatorClicked isEqualToString:@"*"]) {
-            mathBloc = self.multiply;
-        } else if ([self.operatorClicked isEqualToString:@"/"]) {
-            mathBloc = self.divide;
-        }
-        
-        CGFloat answer = mathBloc([self.numbersClicked[0] integerValue], [self.numbersClicked[1] integerValue]);
         self.totalLabel.text = [NSString stringWithFormat:@"%.2f", answer];
     }
 }
